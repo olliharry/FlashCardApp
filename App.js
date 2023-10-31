@@ -5,6 +5,8 @@ import { StatusBar } from "expo-status-bar";
 import Home from './screens/home'
 import CreateNewSubject from './screens/CreateNewSubject'
 import Subject from './screens/subject';
+import CreateNewFlashcard from './screens/CreateNewFlashcard';
+import Learn from './screens/learn';
 import {
   Button,
   FlatList,
@@ -25,6 +27,8 @@ function App() {
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="CreateNewSubject" component={CreateNewSubject} />
         <Stack.Screen name="Subject" component={Subject} />
+        <Stack.Screen name="CreateNewFlashcard" component={CreateNewFlashcard} />
+        <Stack.Screen name="Learn" component={Learn} />
       </Stack.Navigator>
     </NavigationContainer>
   );
