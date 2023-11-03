@@ -12,28 +12,55 @@ import {
 import realm from "../realmConfig";
 
 const LearnScreen = ({ navigation }) => {
+  const [cardIndex, setCardIndex] = useState(0);
   const route = useRoute();
   const currentSubjectDB = realm
     .objects("subject")
     .filtered(`name == "${route.params?.subject}"`);
+
+  const onChangeCardPress = (direction) => {
+    if (direction==1) {
+      if ((cardIndex+1) > currentSubjectDB[0].cardFront.length-1){
+        alert("No more cards!");
+        return;
+      }
+      setCardIndex(cardIndex+1);
+    } else {
+      if((cardIndex-1) < 0 ){
+        alert('No previous card!');
+        return;
+      }
+      setCardIndex(cardIndex-1);
+    }
+  };
 
   return (
     <View style={styles.container}>
       <View style={{ height: 200 }}>
         <FlipCard style={{ width: 300 }} flipHorizontal={true} friction={5}>
           <View style={[styles.card, styles.front]}>
-            <Text style={styles.frontText}>front</Text>
+            <Text style={styles.frontText}>
+              {currentSubjectDB[0].cardFront[cardIndex]}
+            </Text>
           </View>
           <View style={[styles.card, styles.back]}>
-            <Text style={styles.backText}>back</Text>
+            <Text style={styles.backText}>
+              {currentSubjectDB[0].cardBack[cardIndex]}
+            </Text>
           </View>
         </FlipCard>
       </View>
       <View style={styles.prevNextContainer}>
-        <TouchableOpacity style={styles.navigateCardButton}>
+        <TouchableOpacity
+          style={styles.navigateCardButton}
+          onPress={() => {onChangeCardPress(0)}}
+        >
           <Text style={styles.buttonText}>Previous</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navigateCardButton}>
+        <TouchableOpacity
+          style={styles.navigateCardButton}
+          onPress={() => {onChangeCardPress(1)}}
+        >
           <Text style={styles.buttonText}>Next</Text>
         </TouchableOpacity>
       </View>
@@ -96,8 +123,8 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   prevNextContainer: {
-    flexDirection: 'row',
-  }
+    flexDirection: "row",
+  },
 });
 
 export default LearnScreen;
