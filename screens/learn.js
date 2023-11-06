@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useRoute, useFocusEffect } from "@react-navigation/native";
 import FlipCard from "react-native-flip-card";
+import Icon from "react-native-vector-icons/MaterialIcons";
 import {
   View,
   Text,
@@ -19,19 +20,43 @@ const LearnScreen = ({ navigation }) => {
     .filtered(`name == "${route.params?.subject}"`);
 
   const onChangeCardPress = (direction) => {
-    if (direction==1) {
-      if ((cardIndex+1) > currentSubjectDB[0].cardFront.length-1){
+    if (direction == 1) {
+      if (cardIndex + 1 > currentSubjectDB[0].cardFront.length - 1) {
         alert("No more cards!");
         return;
       }
-      setCardIndex(cardIndex+1);
+      setCardIndex(cardIndex + 1);
     } else {
-      if((cardIndex-1) < 0 ){
-        alert('No previous card!');
+      if (cardIndex - 1 < 0) {
+        alert("No previous card!");
         return;
       }
-      setCardIndex(cardIndex-1);
+      setCardIndex(cardIndex - 1);
     }
+  };
+
+  //if all cards deleted
+  //show next available card
+  const onDeletePress = () => {
+    realm.write(() => {
+      currentSubjectDB[0].cardBack.splice(cardIndex, 1);
+      currentSubjectDB[0].cardFront.splice(cardIndex, 1);
+    });
+    if (currentSubjectDB[0].cardBack.length == 0) {
+      alert("No more flashcards!");
+      navigation.navigate("Subject", { subject: route.params?.subject });
+      return;
+    }
+    if (cardIndex + 1 > currentSubjectDB[0].cardFront.length - 1) {
+      console.log("last card");
+      setCardIndex(cardIndex - 1);
+      return;
+    } /*
+    if (cardIndex - 1 < 0) {
+      console.log("first card");
+      setCardIndex(1);
+      return;
+    }*/
   };
 
   return (
@@ -53,17 +78,27 @@ const LearnScreen = ({ navigation }) => {
       <View style={styles.prevNextContainer}>
         <TouchableOpacity
           style={styles.navigateCardButton}
-          onPress={() => {onChangeCardPress(0)}}
+          onPress={() => {
+            onChangeCardPress(0);
+          }}
         >
           <Text style={styles.buttonText}>Previous</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.navigateCardButton}
-          onPress={() => {onChangeCardPress(1)}}
+          onPress={() => {
+            onChangeCardPress(1);
+          }}
         >
           <Text style={styles.buttonText}>Next</Text>
         </TouchableOpacity>
       </View>
+      <TouchableOpacity
+        style={styles.navigateCardButton}
+        onPress={() => onDeletePress()}
+      >
+        <Icon name="delete-forever" size={30} color="#fbcbc9" />
+      </TouchableOpacity>
     </View>
   );
 };
