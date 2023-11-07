@@ -18,6 +18,10 @@ const SubjectScreen = ({ navigation }) => {
     setCurrentSubject(route.params?.subject);
   }, [route.params?.subject]);
 
+  const currentSubjectDB = realm
+    .objects("subject")
+    .filtered(`name == "${route.params?.subject}"`);
+
   const onDeletePress = () => {
     const subjectToDelete = realm
       .objects("subject")
@@ -27,6 +31,14 @@ const SubjectScreen = ({ navigation }) => {
     });
     navigation.navigate("Home");
   };
+
+  const onLearnPress = () => {
+    if(currentSubjectDB[0].cardFront.length===0){
+      alert("No Cards in subject!");
+    }else{
+      navigation.navigate("Learn", { subject: currentSubject });
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -39,7 +51,7 @@ const SubjectScreen = ({ navigation }) => {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.subjectPageButton}
-        onPress={() => navigation.navigate("Learn", { subject: currentSubject })}
+        onPress={() => onLearnPress()}
       >
         <Text style={styles.buttonText}>Learn</Text>
       </TouchableOpacity>

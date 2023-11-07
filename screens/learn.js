@@ -35,28 +35,26 @@ const LearnScreen = ({ navigation }) => {
     }
   };
 
-  //if all cards deleted
-  //show next available card
   const onDeletePress = () => {
     realm.write(() => {
       currentSubjectDB[0].cardBack.splice(cardIndex, 1);
       currentSubjectDB[0].cardFront.splice(cardIndex, 1);
     });
-    if (currentSubjectDB[0].cardBack.length == 0) {
+
+    if (currentSubjectDB[0].cardBack.length === 0) {
       alert("No more flashcards!");
       navigation.navigate("Subject", { subject: route.params?.subject });
       return;
     }
-    if (cardIndex + 1 > currentSubjectDB[0].cardFront.length - 1) {
+    if (cardIndex === 0) {
+      console.log("first card");
+      setCardIndex(0);
+    } else if (cardIndex === currentSubjectDB[0].cardFront.length - 1) {
       console.log("last card");
       setCardIndex(cardIndex - 1);
-      return;
-    } /*
-    if (cardIndex - 1 < 0) {
-      console.log("first card");
-      setCardIndex(1);
-      return;
-    }*/
+    } else {
+      setCardIndex(cardIndex - 1);
+    }
   };
 
   return (
